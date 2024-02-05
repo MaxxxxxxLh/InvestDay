@@ -1,6 +1,6 @@
 # InvestDay platform
 
-Creation of a fictitious trading platform for the InvestDay contest organized by the IsepInvest association.
+This is a fictitious trading platform for the InvestDay contest organized by the IsepInvest association.
 It is possible to buy and sell stocks and cryptocurrencies with the real rates of the US market.
 - Front-end and back-end made in NextJs
 - Database made with Prisma and PostgreSql

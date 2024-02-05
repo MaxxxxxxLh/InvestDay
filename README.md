@@ -5,30 +5,34 @@ It is possible to buy and sell stocks and cryptocurrencies with the real rates o
 - Front-end and back-end made in NextJs
 - Database made with Prisma and PostgreSql
 
+This repo is the new version for the second edition of the InvestDay contest.
+
 ## Images
 
 ![trade](https://github.com/TugdualDek/InvestDay/assets/35851118/f0ecf210-5154-4534-8441-72fc93bd1fa2)
 
-## Getting Started
+## Prerequisites
 
-You will need to fill the .env file with your own values. You can use the .env.example file as a template.
+Docker, docker-compose and npm.
 
-You will need docker and docker-compose installed on your machine.
+## Installation
 
 ```bash
-# first launches
+npm install
 npm run build-dev
-# other launches
+sudo docker exec -it [investday-next container id] npx prisma migrate dev
+sudo docker exec -it [investday-next container id] npx prisma db push
+
+# Then launch normaly with
 npm run launch-dev
-# Actualise dB (if needed)
-# -> Connect to the studio container to run the following commands
- npx prisma migrate dev
- npx prisma db push
 ```
+You will then need to fill the .env file with your own values. You can use the .env.example file as a template.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
+## Usage
 
-Open [http://localhost:5555](http://localhost:555) with your browser to see prisma studio.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+Open [http://localhost:5555](http://localhost:555) to see prisma studio.
 
 ## Learn More
 

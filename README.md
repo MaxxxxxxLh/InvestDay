@@ -13,7 +13,7 @@ This repo is the new version for the second edition of the InvestDay contest.
 
 ## Prerequisites
 
-Docker, docker-compose and npm.
+Docker with compose plugin, npm.
 
 ## Installation
 
@@ -22,14 +22,13 @@ npm install
 npm run build-dev
 sudo docker exec -it [investday-next container id] npx prisma migrate dev
 sudo docker exec -it [investday-next container id] npx prisma db push
-
-# Then launch normaly with
-npm run launch-dev
 ```
 You will then need to fill the .env file with your own values. You can use the .env.example file as a template.
 
-## Usage
-
+ ## Usage
+ ```bash
+ npm run launch-dev
+```
 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 Open [http://localhost:5555](http://localhost:555) to see prisma studio.

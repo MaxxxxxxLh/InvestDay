@@ -7,8 +7,6 @@ It is possible to buy and sell stocks and cryptocurrencies with the real rates o
 
 This repo is the new version for the second edition of the InvestDay contest.
 
-## Images
-
 ![trade](https://github.com/TugdualDek/InvestDay/assets/35851118/f0ecf210-5154-4534-8441-72fc93bd1fa2)
 
 ## Prerequisites

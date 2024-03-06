@@ -1,13 +1,14 @@
 import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
 const { API_POLYGON_KEY } = process.env;
+const { API_FINANCIAL_KEY } = process.env;
 
 async function search(
   term: String,
   userId: number,
   ip: string
 ): Promise<StockApi[]> {
-  const url = `https://api.polygon.io/v3/reference/tickers?apiKey=${API_POLYGON_KEY}&search=${term}`;
+  const url = `https://financialmodelingprep.com/api/v3/search?query=${term}&apikey=${API_FINANCIAL_KEY}`; 
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
@@ -16,27 +17,18 @@ async function search(
   const matches: StockApi[] = [];
   for (let stock of data["results"]) {
     if (
-      stock?.market == "stocks" || // US Stocks
-      stock?.market == "etfs" || // US ETFs
-      stock?.market == "forex" || // Forex
-      stock?.market == "crypto"
+      (stock?.currency_symbol &&
+        stock?.currency_symbol.toUpperCase() == "USD") ||
+      (stock?.currency_name && stock?.currency_name?.toUpperCase() == "USD")
     ) {
-      if (
-        (stock?.currency_symbol &&
-          stock?.currency_symbol.toUpperCase() == "USD") ||
-        (stock?.currency_name && stock?.currency_name?.toUpperCase() == "USD")
-      ) {
-        matches.push({
-          symbol: stock["ticker"],
-          name: stock["name"],
-          market: stock["market"],
-          region: stock["locale"],
-          currency: stock["currency_name"],
-        });
-      }
+      matches.push({
+        symbol: stock["symbol"],
+        name: stock["name"],
+        currency: stock["currency"],
+      });
     }
   }
-
+  console.log(matches);
   return matches;
 }
 

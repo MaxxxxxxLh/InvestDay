@@ -35,7 +35,7 @@ function Navbar() {
           handleToggle={handleToggle}
           active={active}
           id="accueil"
-          title="Accueil"
+          title="Marchés"
           to="/"
         />
         <NavTab
@@ -44,13 +44,6 @@ function Navbar() {
           id="wallet"
           title="Portefeuille"
           to="/wallet"
-        />
-        <NavTab
-          handleToggle={handleToggle}
-          active={active}
-          id="market"
-          title="Marchés"
-          to="/market"
         />
         <NavTab
           handleToggle={handleToggle}

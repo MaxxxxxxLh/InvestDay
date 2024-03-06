@@ -12,9 +12,11 @@ import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import TableWallet from "../components/TableWallet.component.jsx";
 import { useFetch } from "../context/FetchContext.js";
 import homeStyles from "../styles/Home.module.css";
+import TableTransaction from "../components/TableTransaction.component.jsx"; // Nécessaire pour la liste des transactions
 
 import { useWallet } from "../context/WalletContext";
 import { toast } from "react-toastify";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Wallet() {
@@ -64,14 +66,14 @@ export default function Wallet() {
           <Button
             title={"Chercher une action"}
             onClick={() => {
-              router.push("/market");
+              router.push("/");
             }}
           />
         </div>
         <div className={homeStyles.contentContainer}>
           <div className={homeStyles.infoBoxContainer}>
             <InfoBox
-              title={`Valeur indicative de vos actions portefeuille n°${
+              title={`Valeur de vos actions portefeuille n°${
                 selectedId + 1
               }`}
               desc={wallets ? assetsCached.toFixed(2) + " $" : "$"}
@@ -85,7 +87,7 @@ export default function Wallet() {
               icon={cash}
             />
             <InfoBox
-              title={`Valeur totale indicative portefeuille n°${
+              title={`Valeur totale portefeuille n°${
                 selectedId + 1
               }`}
               desc={
@@ -106,6 +108,16 @@ export default function Wallet() {
               }
             />
           </div>
+
+          <title>Transactions</title>
+          <div className={homeStyles.tableContainer}> 
+            {wallets && wallets[selectedId] && (
+              <TableTransaction
+                dataTransactions={wallets[selectedId].transactions}
+              />
+            )} 
+          </div> 
+
         </div>
       </main>
     </>

@@ -1,36 +1,38 @@
 # InvestDay platform
 
-Creation of a fictitious trading platform for the InvestDay contest organized by the IsepInvest association.
+This is a fictitious trading platform for the InvestDay contest organized by the IsepInvest association.
 It is possible to buy and sell stocks and cryptocurrencies with the real rates of the US market.
 - Front-end and back-end made in NextJs
 - Database made with Prisma and PostgreSql
   
 Based on https://github.com/TugdualDek/InvestDay
 
-## Images
+This repo is the new version for the second edition of the InvestDay contest.
+Based on https://github.com/TugdualDek/InvestDay
 
 ![trade](https://github.com/TugdualDek/InvestDay/assets/35851118/f0ecf210-5154-4534-8441-72fc93bd1fa2)
 
-## Getting Started
+## Prerequisites
 
-You will need to fill the .env file with your own values. You can use the .env.example file as a template.
+Docker with compose plugin, npm.
 
-You will need docker and docker-compose installed on your machine.
+## Installation
 
 ```bash
-# first launches
+npm install
 npm run build-dev
-# other launches
-npm run launch-dev
-# Actualise dB (if needed)
-# -> Connect to the studio container to run the following commands
- npx prisma migrate dev
- npx prisma db push
+sudo docker exec -it [investday-next container id] npx prisma migrate dev
+sudo docker exec -it [investday-next container id] npx prisma db push
 ```
+You will then need to fill the .env file with your own values. You can use the .env.example file as a template.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
+ ## Usage
+ ```bash
+ npm run launch-dev
+```
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-Open [http://localhost:5555](http://localhost:555) with your browser to see prisma studio.
+Open [http://localhost:5555](http://localhost:555) to see prisma studio.
 
 ## Learn More
 

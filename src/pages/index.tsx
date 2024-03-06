@@ -11,7 +11,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Action, Status } from "../types/dataTransaction";
 
+// Market
+import TableSearch from "../components/TableSearch.component.jsx";
+import marketStyles from "../../styles/Market.module.css";
+
 import wallet from "src/public/assets/wallet.svg";
+import wallet_image from "src/public/assets/wallet.svg";
 import cash from "src/public/assets/cash.svg";
 import total from "src/public/assets/total.svg";
 import { useFetch } from "../context/FetchContext";
@@ -40,6 +45,65 @@ export default function Home() {
         actualiseWalletsLines(selectedId);
     }
   }, [wallets, selectedId]);
+
+
+// Partie market
+// Ligne const retirée car redondante 33
+const [data, setData] = useState([] as any);
+const [input, setInput] = useState("");
+const fetch = useFetch();
+let tmpName;
+
+const onChange = (e: any) => {
+  tmpName = e.target.value;
+  setInput(tmpName);
+};
+
+const handleKeyDown = (event: any) => {
+  if (event.key === "Enter" && input !== null) {
+    fetchSearch(input);
+  }
+};
+
+function fetchSearch(symbol: string) {
+  return fetch
+    .get("/api/stock/search?term=" + symbol)
+    .then((response) => {
+      return response;
+    })
+    .then((data) => setData(data))
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+let list = [];
+
+//check if data is not undefined and not empty
+if (typeof data !== "undefined" && data.length !== 0) {
+  //console.log(data);
+  //get data.symbol, data.name for each dictionnary of data
+  for (let i = 0; i < data.length; i++) {
+    //check if name contains "warrant" or "Warrant" or "WARRANT" or "Warrants" or "WARRANTS" or "warrants" anf if , then skip
+    if (
+      data[i]["name"] &&
+      (data[i]["name"].includes("warrant") ||
+        data[i]["name"].includes("Warrant") ||
+        data[i]["name"].includes("WARRANT") ||
+        data[i]["name"].includes("Warrants") ||
+        data[i]["name"].includes("WARRANTS") ||
+        data[i]["name"].includes("warrants"))
+    ) {
+      continue;
+    }
+    list.push({
+      symbol: data[i]["symbol"],
+      name: data[i]["name"],
+    });
+  }
+}
+// Partie Market
+  
   return (
     <>
       <Head>
@@ -51,7 +115,7 @@ export default function Home() {
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
           <div className={homeStyles.titleContainer}>
-            <h1>Tableau de bord</h1>
+            <h1>Marchés</h1>
 
             {wallets.map((wallet, index) => (
               <Button
@@ -62,15 +126,22 @@ export default function Home() {
               />
             ))}
           </div>
-          <Button
-            title={"Chercher une action"}
-            onClick={() => {
-              router.push("/market");
-            }}
-          />
         </div>
         <div className={homeStyles.contentContainer}>
           <div className={homeStyles.infoBoxContainer}>
+            <div className={homeStyles.searchInput}>
+              <div className={homeStyles.formSubmit}>
+                <input
+                  className={homeStyles.formSubmit}
+                  type="text"
+                  placeholder="Rechercher..."
+                  name="value"
+                  value={input}
+                  onChange={onChange}
+                  onKeyDown={handleKeyDown}
+                />
+              </div>
+            </div>
             <InfoBox
               title={`Valeur de vos actions portefeuille n°${selectedId + 1}`}
               desc={wallets ? assetsCached.toFixed(2) + " $" : "$"}
@@ -95,13 +166,13 @@ export default function Home() {
               icon={total}
             />
           </div>
+
+          <div className={homeStyles.contentContainer}>
           <div className={homeStyles.tableContainer}>
-            {wallets && wallets[selectedId] && (
-              <TableTransaction
-                dataTransactions={wallets[selectedId].transactions}
-              />
-            )}
+            <TableSearch data={list} />
           </div>
+        </div>
+
         </div>
       </main>
     </>

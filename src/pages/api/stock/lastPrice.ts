@@ -20,7 +20,6 @@ async function lastPrice(req: Request, res: NextApiResponse<any>) {
 
   if (typeof symbol != "string") throw "Invalid request";
   const resp: any = await stocksService.getLastPrice(
-    symbol.toUpperCase(),
     req.auth.sub,
     clientIp as string
   );

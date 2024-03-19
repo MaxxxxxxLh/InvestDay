@@ -49,7 +49,6 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
 
   if (!clientIp) throw new Error("No client IP found");
   const summary: any = await stockService.getLastPrice(
-    symbol,
     req.auth.sub,
     clientIp || ""
   );

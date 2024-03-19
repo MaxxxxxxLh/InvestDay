@@ -59,7 +59,6 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       if (!wallet) throw new Error("Wallet not found");
 
       const price: any = await stocksService.getLastPrice(
-        transaction.symbol,
         req.auth.sub,
         clientIp as string
       );

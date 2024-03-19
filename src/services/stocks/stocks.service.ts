@@ -1,30 +1,28 @@
+import { Dictionary } from "highcharts";
 import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
 const { API_POLYGON_KEY } = process.env;
 const { API_FINANCIAL_KEY } = process.env;
 
 async function search(
-  term: String,
+  query: String,
   userId: number,
   ip: string
 ): Promise<StockApi[]> {
-  const url = `https://financialmodelingprep.com/api/v3/search?query=${term}&apikey=${API_FINANCIAL_KEY}`; 
+  const url = `https://financialmodelingprep.com/api/v3/search?query=${query}&apikey=${API_FINANCIAL_KEY}`; 
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
   const data = await response.json();
+  console.log(data)
   const matches: StockApi[] = [];
-  for (let stock of data["results"]) {
-    if (
-      (stock?.currency_symbol &&
-        stock?.currency_symbol.toUpperCase() == "USD") ||
-      (stock?.currency_name && stock?.currency_name?.toUpperCase() == "USD")
-    ) {
-      matches.push({
-        symbol: stock["symbol"],
-        name: stock["name"],
-        currency: stock["currency"],
+  for (let stock of data) {
+    if (stock.currency && stock.currency.toUpperCase() === "USD") {
+        matches.push({
+        symbol: stock.symbol,
+        name: stock.name,
+        currency: stock.currency,
       });
     }
   }
@@ -46,27 +44,14 @@ function createHeader(userId: string, ip: string) {
   return edgeHeaders;
 }
 
-enum times {
-  day = "1d" as any,
-  week = "1w" as any,
-  month = "1m" as any,
-}
+
 async function getRecentPrices(
   symbol: string,
-  time: times = times.day,
   userId: number,
   ip: string,
-  isCrypto?: boolean
 ): Promise<any[]> {
   let url = "";
-  // Récupérer la date d'aujourd'hui
-  let today = new Date();
-  let daybegining = new Date();
-  daybegining.setDate(today.getDate() - 2 * 365);
-
-  let formatedToday = today.toISOString().slice(0, 10);
-  let formatedBeginingDate = daybegining.toISOString().slice(0, 10);
-  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/${times[time]}/${formatedBeginingDate}/${formatedToday}?adjusted=true&sort=asc&limit=10000&apiKey=${API_POLYGON_KEY}`;
+  url = `https://financialmodelingprep.com/api/v3/stock/real-time-price?apikey=${API_FINANCIAL_KEY}`;
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
@@ -74,7 +59,7 @@ async function getRecentPrices(
 
   const data = await response.json();
 
-  return data;
+  return data.stockList.find((stock: { [x: string]: string; })=>stock['symbol']=symbol).price;
 }
 
 async function getDetailsStock(
@@ -82,12 +67,7 @@ async function getDetailsStock(
   userId: number,
   ip: string
 ): Promise<any[]> {
-  let url = "";
-  if (symbol.startsWith("X:")) {
-    url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
-  } else {
-    url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
-  }
+  let url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${API_FINANCIAL_KEY}`
 
   const response = await fetch(url, {
     method: "GET",
@@ -100,28 +80,27 @@ async function getDetailsStock(
 }
 
 async function getLogoStock(
-  link: string,
+  symbol: string,
   userId: number,
-  ip: string
+  ip: string  
 ): Promise<any> {
-  let url = `${link}` + `?apiKey=${API_POLYGON_KEY}`;
+  let url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${API_FINANCIAL_KEY}`;
 
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
 
-  const svg = await response.text();
+  const data = await response.json();
 
-  return svg;
+  return data[0]["image"];
 }
 
 async function getLastPrice(
-  symbol: string,
   userId: number,
   ip: string
 ): Promise<any[]> {
-  let url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
+  let url = `https://financialmodelingprep.com/api/v3/stock/real-time-price?apikey=${API_FINANCIAL_KEY}`;
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),

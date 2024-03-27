@@ -13,14 +13,20 @@ async function info(req: Request, res: NextApiResponse<any>) {
   if (req.method !== "GET") {
     throw `Method ${req.method} not allowed`;
   }
-  const { symbol, time   } = req.query;
+  const { symbol, time } = req.query;
 
   //get ip address from request;
   const clientIp = requestIp.getClientIp(req);
 
   if (typeof symbol != "string") throw "Invalid request";
+  enum times {
+    day = "1d" as any,
+    week = "1w" as any,
+    month = "1m" as any,
+  }
   const resp = await stocksService.getRecentPrices(
     symbol.toUpperCase(),
+    time as unknown as times,
     req.auth.sub,
     clientIp as string,
   );

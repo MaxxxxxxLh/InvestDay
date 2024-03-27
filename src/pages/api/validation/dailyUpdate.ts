@@ -28,6 +28,7 @@ async function dailyUpdate(req: Request, res: NextApiResponse<any>) {
       return pricesFound[symbol];
     }
     const price: any = await stocksService.getLastPrice(
+      symbol,
       req.auth.sub,
       clientIp as string
     );

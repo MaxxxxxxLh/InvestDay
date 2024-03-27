@@ -13,24 +13,24 @@ async function getLogo(req: Request, res: NextApiResponse<any>) {
   if (req.method !== "GET") {
     throw `Method ${req.method} not allowed`;
   }
-  const { url } = req.query;
+  const { symbol } = req.query;
 
   //get ip address from request;
   const clientIp = requestIp.getClientIp(req);
 
-  if (typeof url != "string") throw "Invalid request";
+  if (typeof symbol != "string") throw "Invalid request";
   const resp = await stocksService.getLogoStock(
-    url,
+    symbol,
     req.auth.sub,
     clientIp as string
   );
-
-  //return response as text
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "image/svg+xml");
+    
+  res.status(200);
+  res.setHeader("Content-Type", "image/png"); 
   res.setHeader(
     "Cache-Control",
     "public, immutable, no-transform, s-maxage=31536000, max-age=31536000"
   );
   res.send(resp);
+  //return res.status(200).json(resp);
 }

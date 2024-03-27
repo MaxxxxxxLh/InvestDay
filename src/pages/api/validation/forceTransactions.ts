@@ -59,13 +59,14 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       if (!wallet) throw new Error("Wallet not found");
 
       const price: any = await stocksService.getLastPrice(
+        transaction.symbol,
         req.auth.sub,
         clientIp as string
       );
       console.log("price", price);
       console.log(
         "newcash",
-        wallet.cash - price.results[0].price * transaction.quantity
+        wallet.cash - price * transaction.quantity
       );
       const newWallet = await prisma.wallet.update({
         where: {
@@ -75,7 +76,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
               : transaction.wallet.id,
         },
         data: {
-          cash: wallet.cash - price.results[0].price * transaction.quantity,
+          cash: wallet.cash - price * transaction.quantity,
         },
       });
 
@@ -86,7 +87,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
         },
         data: {
           status: "EXECUTED",
-          valueAtExecution: price.results[0].price,
+          valueAtExecution: price,
           executedAt: new Date(),
         },
       });

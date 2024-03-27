@@ -49,13 +49,14 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
 
   if (!clientIp) throw new Error("No client IP found");
   const summary: any = await stockService.getLastPrice(
+    symbol,
     req.auth.sub,
     clientIp || ""
   );
-  if (summary?.results[0]?.error == "NOT_FOUND") {
+  if (summary?.error == "NOT_FOUND") {
     throw "Unknown symbol";
   }
-  let stock = summary.results[0];
+  let stock = summary;
 
   if (!wallet.id) throw new Error("Wallet not found");
   const transaction = await transactionsService.create(

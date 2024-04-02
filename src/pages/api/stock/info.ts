@@ -20,12 +20,15 @@ async function info(req: Request, res: NextApiResponse<any>) {
 
   if (typeof symbol != "string") throw "Invalid request";
   enum times {
-    day = "1d" as any,
-    week = "1w" as any,
-    month = "1m" as any,
+    minute = "1min" as any,
+    minute_5 = "5min" as any,
+    minute_15 = "15min" as any,
+    minute_30 = "30min" as any,
+    hour_1 = "1hour" as any,
+    hour_4 = "4hour" as any,
   }
   const resp = await stocksService.getRecentPrices(
-    symbol.toUpperCase(),
+    symbol,
     time as unknown as times,
     req.auth.sub,
     clientIp as string,

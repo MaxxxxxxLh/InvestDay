@@ -8,7 +8,7 @@ async function search(
   userId: number,
   ip: string
 ): Promise<StockApi[]> {
-  const url = `https://financialmodelingprep.com/api/v3/search?query=${symbol}&apikey=${API_FINANCIAL_KEY}`; 
+  const url = `https://financialmodelingprep.com/api/v3/search?query=${symbol}&apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`; 
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
@@ -44,14 +44,17 @@ function createHeader(userId: string, ip: string) {
 }
 
 enum times {
-  day = "1d" as any,
-  week = "1w" as any,
-  month = "1m" as any,
+  minute = "1min" as any,
+  minute_5 = "5min" as any,
+  minute_15 = "15min" as any,
+  minute_30 = "30min" as any,
+  hour_1 = "1hour" as any,
+  hour_4 = "4hour" as any,
 }
 
 async function getRecentPrices(
   symbol: string,
-  time: times = times.day,
+  time: times = times.minute,
   userId: number,
   ip: string,
 ): Promise<any[]> {
@@ -59,10 +62,19 @@ async function getRecentPrices(
   let today = new Date();
   let daybegining = new Date();
   daybegining.setDate(today.getDate() - 2 * 365);
-
-  let formatedToday = today.toISOString().slice(0, 10);
-  let formatedBeginingDate = daybegining.toISOString().slice(0, 10);
-  url = `https://financialmodelingprep.com/api/v3/historical-chart/5min/${symbol}?from=${formatedBeginingDate}&to=${formatedToday}&apikey=${API_FINANCIAL_KEY}`;
+  let formatedToday: string = formatDate(today);
+  let formatedBeginingDate: string = formatDate(daybegining);
+  
+  function formatDate(date: Date): string {
+    let year: number = date.getFullYear();
+    let day: string | number = date.getDate();
+    let month: string | number = date.getMonth() + 1;
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+    return `${year}-${day}-${month}`;
+  }
+  url = `https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${formatedBeginingDate}&to=${formatedToday}&apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`;
+  
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
@@ -70,7 +82,7 @@ async function getRecentPrices(
 
   const data = await response.json();
 
-  return data.companiesPriceList[0].price;
+  return data;
 }
 
 async function getDetailsStock(
@@ -79,7 +91,7 @@ async function getDetailsStock(
   ip: string
 ): Promise<any[]> {
 
-  let url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?${API_FINANCIAL_KEY}`
+  let url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`
 
   const response = await fetch(url, {
     method: "GET",
@@ -112,15 +124,14 @@ async function getLastPrice(
   userId: number,
   ip: string
 ): Promise<any[]> {
-  let url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}?apikey=${API_FINANCIAL_KEY}`;
+  let url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}?apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`;
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
 
   const data = await response.json(); 
-  console.log(data.companiesPriceList[0].price)
-  return data.companiesPriceList[0].price;
+  return data;
 }
 
 const stocksService = {

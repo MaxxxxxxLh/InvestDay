@@ -64,10 +64,10 @@ export default function DetailAction(req: Request) {
     try {
       const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
       let data = response;
-      let urlToPass = data["results"]?.branding?.logo_url;
+      let urlToPass = data[0]?.branding?.logo_url;//à modifier
       fetchLogo(urlToPass);
       const price = await getPrice(symbol);
-      return setDetail({ ...data["results"], price });
+      return setDetail({ ...data[0], price });
     } catch (error) {
       console.log(error);
     }
@@ -91,11 +91,11 @@ export default function DetailAction(req: Request) {
       });
     } else {
       setDataCleaned({
-        name: detail.name,
-        market_cap: format(detail.market_cap),
-        number: format(detail.weighted_shares_outstanding),
+        name: detail.companyName,
+        market_cap: format(detail.marketCap),
+        number: format(detail.sharesOutstanding),
         prix: String(
-          (Number(detail.market_cap) / Number(detail.number)).toFixed(2)
+          (Number(detail.marketCap) / Number(detail.volume)).toFixed(2)
         ),
       });
     }
@@ -116,59 +116,57 @@ export default function DetailAction(req: Request) {
 
   let options = {};
 
-  //check if data["queryCount"] is defined and if it is gretaer than 0 (not empty)
-  if (typeof data["queryCount"] !== "undefined" && data["queryCount"] > 0) {
-    var donneesFinancieres;
-    donneesFinancieres = data["results"];
-    let list = [] as any;
+  var donneesFinancieres;
+  donneesFinancieres = data[0];
+  let list = [] as any;
 
-    // check if donneesFinancieres is defined and if length is greater than 0 (not empty)
-    if (
-      typeof donneesFinancieres !== "undefined" &&
-      donneesFinancieres.length > 0
-    ) {
-      for (let i = 0; i < donneesFinancieres.length; i++) {
-        // put in the list an array with the values of t and c
-        list.push([donneesFinancieres[i].t, donneesFinancieres[i].c]);
-      }
+  // check if donneesFinancieres is defined and if length is greater than 0 (not empty)
+  if (
+    typeof donneesFinancieres !== "undefined" &&
+    donneesFinancieres.length > 0
+  ) {
+    for (let i = 0; i < donneesFinancieres.length; i++) {
+      // put in the list an array with the values of t and c
+      list.push([donneesFinancieres[i].t, donneesFinancieres[i].c]);
     }
+  }
 
-    options = {
-      chart: {
-        //width: 800,
-        height: 600,
+  options = {
+    chart: {
+      //width: 800,
+      height: 600,
+    },
+    title: {
+      text: "Graphique : " + nameAction,
+    },
+    series: [
+      {
+        data: list,
+        name: "prix",
       },
-      title: {
-        text: "Graphique : " + nameAction,
-      },
-      series: [
+    ],
+    responsive: {
+      rules: [
         {
-          data: list,
-          name: "prix",
-        },
-      ],
-      responsive: {
-        rules: [
-          {
-            condition: {
-              maxWidth: 500,
+          condition: {
+            maxWidth: 500,
+          },
+          chartOptions: {
+            chart: {
+              height: 300,
             },
-            chartOptions: {
-              chart: {
-                height: 300,
-              },
-              subtitle: {
-                text: null,
-              },
-              navigator: {
-                enabled: false,
-              },
+            subtitle: {
+              text: null,
+            },
+            navigator: {
+              enabled: false,
             },
           },
-        ],
-      },
-    };
-  }
+        },
+      ],
+    },
+  };
+
 
   useEffect(() => {
     if (user && isAuthenticated && nameAction) {

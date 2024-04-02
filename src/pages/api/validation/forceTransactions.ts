@@ -66,7 +66,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       console.log("price", price);
       console.log(
         "newcash",
-        wallet.cash - price * transaction.quantity
+        wallet.cash - price.companiesPriceList[0].price * transaction.quantity
       );
       const newWallet = await prisma.wallet.update({
         where: {
@@ -76,7 +76,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
               : transaction.wallet.id,
         },
         data: {
-          cash: wallet.cash - price * transaction.quantity,
+          cash: wallet.cash - price.companiesPriceList[0].price * transaction.quantity,
         },
       });
 
@@ -87,7 +87,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
         },
         data: {
           status: "EXECUTED",
-          valueAtExecution: price,
+          valueAtExecution: price.companiesPriceList[0].price,
           executedAt: new Date(),
         },
       });

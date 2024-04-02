@@ -13,12 +13,12 @@ async function findAll(
 ): Promise<Transaction[]> {
   if (!byExecution) {
     return await prisma.transaction.findMany({
-      where: { walletId: parseInt(walletId) },
+      where: { walletId: parseInt(walletId)},
       orderBy: { createdAt: "desc" },
     });
   } else {
     return await prisma.transaction.findMany({
-      where: { walletId: parseInt(walletId) },
+      where: { walletId: parseInt(walletId)},
       orderBy: { executedAt: "asc" },
     });
   }

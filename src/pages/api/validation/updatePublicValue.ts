@@ -32,8 +32,9 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
       req.auth.sub,
       clientIp as string
     );
+    pricesFound[symbol] = price.companiesPriceList[0].price;
 
-    return price as number;
+    return price.companiesPriceList[0].price as number;
   }
 
   //get the wallet and then the user

@@ -51,9 +51,6 @@ export default function Ranks() {
   useEffect(() => {
     setDataRanksShown(dataRanks);
     fetchRanks();
-    toast.info(
-      "Le classement à été mis à jour le 12 mars, viens à l'InvestDay pour découvrir ta position finale !"
-    );
   }, []);
 
   return (

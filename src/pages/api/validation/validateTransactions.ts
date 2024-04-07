@@ -56,9 +56,9 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       clientIp as string
     );
 
-    pricesFound[symbol] = price.results[0].price;
+    pricesFound[symbol] = price.companiesPriceList[0].price;
 
-    return price.results[0].price as number;
+    return price.companiesPriceList[0].price as number;
   }
 
   let walletsRemainingCash: {

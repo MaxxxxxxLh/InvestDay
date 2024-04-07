@@ -19,14 +19,14 @@ async function lastPrice(req: Request, res: NextApiResponse<any>) {
   const clientIp = requestIp.getClientIp(req);
 
   if (typeof symbol != "string") throw "Invalid request";
-  const resp: any = await stocksService.getLastPrice(
-    symbol.toUpperCase(),
+  console.log(symbol)
+  const resp = await stocksService.getLastPrice(
+    symbol,
     req.auth.sub,
     clientIp as string
   );
-
   //return only thge last array from the "results" array
-  return res.status(200).json(resp["results"][0].price);
+  return res.status(200).json(resp);
 
   //return res.status(200).json(resp);
 }

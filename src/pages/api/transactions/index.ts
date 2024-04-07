@@ -53,10 +53,11 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     req.auth.sub,
     clientIp || ""
   );
-  if (summary?.results[0]?.error == "NOT_FOUND") {
+  console.log("summary "+summary)
+  if (summary?.companiesPriceList[0]?.error == "NOT_FOUND") {
     throw "Unknown symbol";
   }
-  let stock = summary.results[0];
+  let stock: any = summary.companiesPriceList[0];
 
   if (!wallet.id) throw new Error("Wallet not found");
   const transaction = await transactionsService.create(
@@ -65,12 +66,12 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     Number(parseFloat(amount).toFixed(1)),
     wallet.id as number
   );
-
-  if (
+  console.log("transaction "+transaction)
+  /*if (
     stock.market_status !== "closed" &&
     stock.market_status !== "early_trading" &&
     stock.market_status !== "late_trading"
-  ) {
+  ) {*/
     if (selling === "true") {
       let quantity = 0;
       wallet.transactions.forEach((transaction: any) => {
@@ -93,7 +94,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
         await transactionsService.executeTransaction(transaction, stock.price);
       }
     }
-  }
+  //}
 
   // get new wallet
   const newWallet = await walletsService.find(walletId);

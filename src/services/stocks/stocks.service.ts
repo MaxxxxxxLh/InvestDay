@@ -1,42 +1,31 @@
+import { Dictionary } from "highcharts";
 import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
-const { API_POLYGON_KEY } = process.env;
+const { API_FINANCIAL_KEY } = process.env;
 
 async function search(
-  term: String,
+  symbol: String,
   userId: number,
   ip: string
 ): Promise<StockApi[]> {
-  const url = `https://api.polygon.io/v3/reference/tickers?apiKey=${API_POLYGON_KEY}&search=${term}`;
+  const url = `https://financialmodelingprep.com/api/v3/search?query=${symbol}&apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`; 
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
   const data = await response.json();
+  console.log(data)
   const matches: StockApi[] = [];
-  for (let stock of data["results"]) {
-    if (
-      stock?.market == "stocks" || // US Stocks
-      stock?.market == "etfs" || // US ETFs
-      stock?.market == "forex" || // Forex
-      stock?.market == "crypto"
-    ) {
-      if (
-        (stock?.currency_symbol &&
-          stock?.currency_symbol.toUpperCase() == "USD") ||
-        (stock?.currency_name && stock?.currency_name?.toUpperCase() == "USD")
-      ) {
+  for (let stock of data) {
+    if (stock.currency && stock.currency.toUpperCase() === "USD") {
         matches.push({
-          symbol: stock["ticker"],
-          name: stock["name"],
-          market: stock["market"],
-          region: stock["locale"],
-          currency: stock["currency_name"],
-        });
-      }
+        symbol: stock.symbol,
+        name: stock.name,
+        currency: stock.currency,
+      });
     }
   }
-
+  console.log(matches);
   return matches;
 }
 
@@ -55,26 +44,37 @@ function createHeader(userId: string, ip: string) {
 }
 
 enum times {
-  day = "1d" as any,
-  week = "1w" as any,
-  month = "1m" as any,
+  minute = "1min" as any,
+  minute_5 = "5min" as any,
+  minute_15 = "15min" as any,
+  minute_30 = "30min" as any,
+  hour_1 = "1hour" as any,
+  hour_4 = "4hour" as any,
 }
+
 async function getRecentPrices(
   symbol: string,
-  time: times = times.day,
+  time: times = times.minute,
   userId: number,
   ip: string,
-  isCrypto?: boolean
 ): Promise<any[]> {
   let url = "";
-  // Récupérer la date d'aujourd'hui
   let today = new Date();
   let daybegining = new Date();
   daybegining.setDate(today.getDate() - 2 * 365);
-
-  let formatedToday = today.toISOString().slice(0, 10);
-  let formatedBeginingDate = daybegining.toISOString().slice(0, 10);
-  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/${times[time]}/${formatedBeginingDate}/${formatedToday}?adjusted=true&sort=asc&limit=10000&apiKey=${API_POLYGON_KEY}`;
+  let formatedToday: string = formatDate(today);
+  let formatedBeginingDate: string = formatDate(daybegining);
+  
+  function formatDate(date: Date): string {
+    let year: number = date.getFullYear();
+    let day: string | number = date.getDate();
+    let month: string | number = date.getMonth() + 1;
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+    return `${year}-${day}-${month}`;
+  }
+  url = `https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${formatedBeginingDate}&to=${formatedToday}&apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`;
+  
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
@@ -90,12 +90,8 @@ async function getDetailsStock(
   userId: number,
   ip: string
 ): Promise<any[]> {
-  let url = "";
-  if (symbol.startsWith("X:")) {
-    url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
-  } else {
-    url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
-  }
+
+  let url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`
 
   const response = await fetch(url, {
     method: "GET",
@@ -108,20 +104,19 @@ async function getDetailsStock(
 }
 
 async function getLogoStock(
-  link: string,
+  symbol: string,
   userId: number,
-  ip: string
+  ip: string  
 ): Promise<any> {
-  let url = `${link}` + `?apiKey=${API_POLYGON_KEY}`;
+  let url = `https://financialmodelingprep.com/image-stock/${symbol}.png`;
 
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
-
-  const svg = await response.text();
-
-  return svg;
+  
+  const imagePng = await response.json();
+  return imagePng
 }
 
 async function getLastPrice(
@@ -129,14 +124,13 @@ async function getLastPrice(
   userId: number,
   ip: string
 ): Promise<any[]> {
-  let url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
+  let url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}?apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`;
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
 
-  const data = await response.json();
-
+  const data = await response.json(); 
   return data;
 }
 

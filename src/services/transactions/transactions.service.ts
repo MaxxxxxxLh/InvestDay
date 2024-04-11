@@ -73,7 +73,7 @@ async function executeTransaction(
       status: Status.EXECUTED,
     },
   });
-
+  console.log(newTransaction)
   await walletsService.addMoney(
     transaction.walletId,
     stockPrice * transaction.quantity * (transaction.isSellOrder ? 1 : -1)

@@ -21,9 +21,8 @@ async function details(req: Request, res: NextApiResponse<any>) {
   if (typeof symbol != "string") throw "Invalid request";
   const resp = await stocksService.getDetailsStock(
     symbol.toUpperCase(),
-    req.auth.sub, 
+    req.auth.sub,
     clientIp as string
   );
-
-  return res.status(200).json(resp);
+  return res.status(200).json(resp)
 }

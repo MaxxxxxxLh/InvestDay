@@ -99,7 +99,7 @@ async function getDetailsStock(
   });
 
   const data = await response.json();
-
+  console.log("detail stock service "+data)
   return data;
 }
 
@@ -125,12 +125,13 @@ async function getLastPrice(
   ip: string
 ): Promise<any[]> {
   let url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}?apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`;
-  const response = await fetch(url, {
+  const response = await fetch(url, { 
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
 
   const data = await response.json(); 
+  console.log(data.companiesPriceList[0].price)
   return data;
 }
 

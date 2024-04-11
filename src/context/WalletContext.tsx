@@ -169,15 +169,15 @@ const WalletProvider = ({ children }: { children: any }) => {
         valuesCachedRef.current[symbol].date > Date.now() - 10000
       ) {
         console.log("from cache");
+        console.log(valuesCachedRef.current[symbol].value)
         return valuesCachedRef.current[symbol].value;
       }
       const response = await fetch.get("/api/stock/lastPrice?symbol=" + symbol);
-
       setValuesCached((value) => {
         return {
           ...value,
           [symbol]: {
-            value: response,
+            value: response.companiesPriceList[0].price,
             date: Date.now(),
           },
         };

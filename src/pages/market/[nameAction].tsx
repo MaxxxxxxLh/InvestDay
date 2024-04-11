@@ -63,30 +63,33 @@ export default function DetailAction(req: Request) {
   async function fetchDetail(symbol: string) {
     try {
       const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
-      let data = response;
-      let urlToPass = data[0]?.branding?.logo_url;//à modifier
-      fetchLogo(urlToPass);
+      fetchLogo(symbol)
       const price = await getPrice(symbol);
-      return setDetail({ ...data[0], price });
+      return setDetail({ ...response[0], price });
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function fetchLogo(url: string) {
-    const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
-
+  async function fetchLogo(symbol: string) {
+    const logo = await fetch.get("/api/stock/getLogo?symbol=" + symbol, true);
     setLogo(logo);
   }
 
   useEffect(() => {
+    console.log(detail)
     if (!detail) return;
-
+    /*console.log({
+      name: detail[0].name,
+      market_cap: format(detail[0].marketCap),
+      number: format(detail[0].sharesOutstanding),
+      prix: String(detail[0].price),
+    })*/
     if (detail[0]) {
       setDataCleaned({
         name: detail[0].name,
-        market_cap: "",
-        number: "",
+        market_cap: format(detail[0].marketCap),
+        number: format(detail[0].sharesOutstanding),
         prix: String(detail[0].price),
       });
     } else {
@@ -99,6 +102,7 @@ export default function DetailAction(req: Request) {
         ),
       });
     }
+    //console.log(dataCleaned)
   }, [detail]);
   //check if details is not undefined
 
@@ -117,7 +121,7 @@ export default function DetailAction(req: Request) {
   let options = {};
 
   var donneesFinancieres;
-  donneesFinancieres = data[0];
+  donneesFinancieres = data;
   let list = [] as any;
 
   // check if donneesFinancieres is defined and if length is greater than 0 (not empty)
@@ -170,7 +174,7 @@ export default function DetailAction(req: Request) {
 
   useEffect(() => {
     if (user && isAuthenticated && nameAction) {
-      fetchData(nameAction as string, "1d");
+      fetchData(nameAction as string, "1min");
       fetchDetail(nameAction as string);
     }
   }, [router, isAuthenticated, user]);

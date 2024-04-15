@@ -30,10 +30,10 @@ export default function DetailAction(req: Request) {
   const [detail, setDetail] = useState({} as any);
   const { user, isAuthenticated } = useAuthentification();
   const [dataCleaned, setDataCleaned] = useState({
-    name: "-",
-    market_cap: "-",
-    number: "-",
-    prix: "-",
+    "name": "",
+    "market_cap": "",
+    "number": "",
+    "prix": "",
   });
   const router = useRouter();
   const { wallets, selectedId, selectWallet, assetsCached, getPrice } =
@@ -64,12 +64,14 @@ export default function DetailAction(req: Request) {
     try {
       const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
       fetchLogo(symbol)
-      const price = await getPrice(symbol);
-      return setDetail({ ...response[0], price });
+      const priceData = await getPrice(symbol);
+      console.log(priceData)
+      setDetail({...response[0]});
     } catch (error) {
       console.log(error);
     }
   }
+
 
   async function fetchLogo(symbol: string) {
     const logo = await fetch.get("/api/stock/getLogo?symbol=" + symbol, true);
@@ -79,30 +81,12 @@ export default function DetailAction(req: Request) {
   useEffect(() => {
     console.log(detail)
     if (!detail) return;
-    /*console.log({
-      name: detail[0].name,
-      market_cap: format(detail[0].marketCap),
-      number: format(detail[0].sharesOutstanding),
-      prix: String(detail[0].price),
-    })*/
-    if (detail[0]) {
-      setDataCleaned({
-        name: detail[0].name,
-        market_cap: format(detail[0].marketCap),
-        number: format(detail[0].sharesOutstanding),
-        prix: String(detail[0].price),
-      });
-    } else {
-      setDataCleaned({
-        name: detail.companyName,
-        market_cap: format(detail.marketCap),
-        number: format(detail.sharesOutstanding),
-        prix: String(
-          (Number(detail.marketCap) / Number(detail.volume)).toFixed(2)
-        ),
-      });
-    }
-    //console.log(dataCleaned)
+    setDataCleaned({
+      name: detail.name,
+      market_cap: format(detail.marketCap),
+      number: format(detail.sharesOutstanding),
+      prix: String(detail.price),
+    });
   }, [detail]);
   //check if details is not undefined
 
@@ -129,9 +113,12 @@ export default function DetailAction(req: Request) {
     typeof donneesFinancieres !== "undefined" &&
     donneesFinancieres.length > 0
   ) {
+    console.log("données financières")
+    console.log(donneesFinancieres)
     for (let i = 0; i < donneesFinancieres.length; i++) {
       // put in the list an array with the values of t and c
-      list.push([donneesFinancieres[i].t, donneesFinancieres[i].c]);
+      const date = new Date(donneesFinancieres[i].date)
+      list.push([date.getTime(), donneesFinancieres[i].close]);
     }
   }
 

@@ -118,8 +118,10 @@ export default function DetailAction(req: Request) {
     for (let i = 0; i < donneesFinancieres.length; i++) {
       // put in the list an array with the values of t and c
       const date = new Date(donneesFinancieres[i].date)
-      list.push([date.getTime(), donneesFinancieres[i].close]);
+      list.push([date.getTime(), donneesFinancieres[i].close]);  
     }
+    list.reverse()
+    console.table(list)
   }
 
   options = {

@@ -64,8 +64,6 @@ export default function DetailAction(req: Request) {
     try {
       const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
       fetchLogo(symbol)
-      const priceData = await getPrice(symbol);
-      console.log(priceData)
       setDetail({...response[0]});
     } catch (error) {
       console.log(error);
@@ -92,7 +90,10 @@ export default function DetailAction(req: Request) {
 
   function fetchData(symbol: string, time: string) {
     return fetch
-      .get("/api/stock/info?symbol=" + symbol)
+      .get("/api/stock/info?" + new URLSearchParams({
+        symbol:symbol,
+        time:time,
+      }))
       .then((response) => {
         return response;
       })
@@ -121,7 +122,6 @@ export default function DetailAction(req: Request) {
       list.push([date.getTime(), donneesFinancieres[i].close]);  
     }
     list.reverse()
-    console.table(list)
   }
 
   options = {
@@ -163,7 +163,7 @@ export default function DetailAction(req: Request) {
 
   useEffect(() => {
     if (user && isAuthenticated && nameAction) {
-      fetchData(nameAction as string, "1min");
+      fetchData(nameAction as string, "1hour");
       fetchDetail(nameAction as string);
     }
   }, [router, isAuthenticated, user]);

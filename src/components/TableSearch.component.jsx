@@ -32,6 +32,7 @@ function TableSearch(props) {
         <tr className={TableTransactionStyles.tr}>
           <th className={TableTransactionStyles.th}>Libellé</th>
           <th className={TableTransactionStyles.th}>Nom</th>
+          <th className={TableTransactionStyles.th}>Marché</th>
           <th className={TableTransactionStyles.th}>Action</th>
         </tr>
       </thead>
@@ -43,6 +44,9 @@ function TableSearch(props) {
             </td>
             <td data-label="Nom" className={TableTransactionStyles.td}>
               {item?.name}
+            </td>
+            <td data-label="Marché" className={TableTransactionStyles.td}>
+              {item?.stockExchange}
             </td>
             <td data-label="Action" className={TableTransactionStyles.td}>
               <Button

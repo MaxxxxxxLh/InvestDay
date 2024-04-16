@@ -22,6 +22,7 @@ async function search(
         symbol: stock.symbol,
         name: stock.name,
         currency: stock.currency,
+        stockExchange: stock.stockExchange,
       });
     }
   }
@@ -81,7 +82,6 @@ async function getRecentPrices(
   });
 
   const data = await response.json();
-  console.log(data)
   return data;
 }
 

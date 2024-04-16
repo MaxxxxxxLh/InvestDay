@@ -41,14 +41,15 @@ export default function Market(this: any) {
       .then((response) => {
         return response;
       })
-      .then((data) => setData(data))
+      .then((data) => {
+        return setData(data)})
       .catch((error) => {
         console.log(error);
       });
   }
 
   let list = [];
-
+  console.log(data)
   //check if data is not undefined and not empty
   if (typeof data !== "undefined" && data.length !== 0) {
     console.log("market index"+data);
@@ -69,6 +70,7 @@ export default function Market(this: any) {
       list.push({
         symbol: data[i]["symbol"],
         name: data[i]["name"],
+        stockExchange: data[i]["stockExchange"],
       });
     }
   }

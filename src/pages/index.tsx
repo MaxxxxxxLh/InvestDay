@@ -99,6 +99,7 @@ if (typeof data !== "undefined" && data.length !== 0) {
     list.push({
       symbol: data[i]["symbol"],
       name: data[i]["name"],
+      stockExchange: data[i]["stockExchange"],
     });
   }
 }

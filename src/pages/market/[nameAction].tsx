@@ -163,7 +163,7 @@ export default function DetailAction(req: Request) {
 
   useEffect(() => {
     if (user && isAuthenticated && nameAction) {
-      fetchData(nameAction as string, "1hour");
+      fetchData(nameAction as string, "4hour");
       fetchDetail(nameAction as string);
     }
   }, [router, isAuthenticated, user]);

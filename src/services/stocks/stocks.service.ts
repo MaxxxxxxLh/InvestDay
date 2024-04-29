@@ -74,7 +74,7 @@ async function getRecentPrices(
     month = month < 10 ? '0' + month : month;
     return `${year}-${day}-${month}`;
   }
-  url = `https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${formatedBeginingDate}&to=${formatedToday}&apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`;
+  url = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`//`https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${formatedBeginingDate}&to=${formatedToday}&apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`;
   
   const response = await fetch(url, {
     method: "GET",
@@ -82,7 +82,7 @@ async function getRecentPrices(
   });
 
   const data = await response.json();
-  return data;
+  return data.historical;
 }
 
 async function getDetailsStock(

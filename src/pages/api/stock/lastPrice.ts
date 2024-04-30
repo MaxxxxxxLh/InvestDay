@@ -19,7 +19,6 @@ async function lastPrice(req: Request, res: NextApiResponse<any>) {
   const clientIp = requestIp.getClientIp(req);
 
   if (typeof symbol != "string") throw "Invalid request";
-  console.log(symbol)
   const resp = await stocksService.getLastPrice(
     symbol,
     req.auth.sub,

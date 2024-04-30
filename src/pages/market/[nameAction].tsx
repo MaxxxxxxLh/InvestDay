@@ -30,10 +30,10 @@ export default function DetailAction(req: Request) {
   const [detail, setDetail] = useState({} as any);
   const { user, isAuthenticated } = useAuthentification();
   const [dataCleaned, setDataCleaned] = useState({
-    name: "-",
-    market_cap: "-",
-    number: "-",
-    prix: "-",
+    "name": "",
+    "market_cap": "",
+    "number": "",
+    "prix": "",
   });
   const router = useRouter();
   const { wallets, selectedId, selectWallet, assetsCached, getPrice } =
@@ -63,48 +63,37 @@ export default function DetailAction(req: Request) {
   async function fetchDetail(symbol: string) {
     try {
       const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
-      let data = response;
-      let urlToPass = data[0]?.branding?.logo_url;//à modifier
-      fetchLogo(urlToPass);
-      const price = await getPrice(symbol);
-      return setDetail({ ...data[0], price });
+      fetchLogo(symbol)
+      setDetail({...response[0]});
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function fetchLogo(url: string) {
-    const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
 
+  async function fetchLogo(symbol: string) {
+    const logo = await fetch.get("/api/stock/getLogo?symbol=" + symbol, true);
     setLogo(logo);
   }
 
   useEffect(() => {
+    console.log(detail)
     if (!detail) return;
-
-    if (detail[0]) {
-      setDataCleaned({
-        name: detail[0].name,
-        market_cap: "",
-        number: "",
-        prix: String(detail[0].price),
-      });
-    } else {
-      setDataCleaned({
-        name: detail.companyName,
-        market_cap: format(detail.marketCap),
-        number: format(detail.sharesOutstanding),
-        prix: String(
-          (Number(detail.marketCap) / Number(detail.volume)).toFixed(2)
-        ),
-      });
-    }
+    setDataCleaned({
+      name: detail.name,
+      market_cap: format(detail.marketCap),
+      number: format(detail.sharesOutstanding),
+      prix: String(detail.price),
+    });
   }, [detail]);
   //check if details is not undefined
 
   function fetchData(symbol: string, time: string) {
     return fetch
-      .get("/api/stock/info?symbol=" + symbol)
+      .get("/api/stock/info?" + new URLSearchParams({
+        symbol:symbol,
+        time:time,
+      }))
       .then((response) => {
         return response;
       })
@@ -117,7 +106,7 @@ export default function DetailAction(req: Request) {
   let options = {};
 
   var donneesFinancieres;
-  donneesFinancieres = data[0];
+  donneesFinancieres = data;
   let list = [] as any;
 
   // check if donneesFinancieres is defined and if length is greater than 0 (not empty)
@@ -125,10 +114,14 @@ export default function DetailAction(req: Request) {
     typeof donneesFinancieres !== "undefined" &&
     donneesFinancieres.length > 0
   ) {
+    console.log("données financières")
+    console.log(donneesFinancieres)
     for (let i = 0; i < donneesFinancieres.length; i++) {
       // put in the list an array with the values of t and c
-      list.push([donneesFinancieres[i].t, donneesFinancieres[i].c]);
+      const date = new Date(donneesFinancieres[i].date)
+      list.push([date.getTime(), donneesFinancieres[i].close]);  
     }
+    list.reverse()
   }
 
   options = {
@@ -170,7 +163,7 @@ export default function DetailAction(req: Request) {
 
   useEffect(() => {
     if (user && isAuthenticated && nameAction) {
-      fetchData(nameAction as string, "1d");
+      fetchData(nameAction as string, "4hour");
       fetchDetail(nameAction as string);
     }
   }, [router, isAuthenticated, user]);

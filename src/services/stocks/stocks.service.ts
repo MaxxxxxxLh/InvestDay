@@ -8,7 +8,7 @@ async function search(
   userId: number,
   ip: string
 ): Promise<StockApi[]> {
-  const url = `https://financialmodelingprep.com/api/v3/search?query=${symbol}&apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`; 
+  const url = `https://financialmodelingprep.com/api/v3/search?query=${symbol}&apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`; 
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
@@ -22,6 +22,7 @@ async function search(
         symbol: stock.symbol,
         name: stock.name,
         currency: stock.currency,
+        stockExchange: stock.stockExchange,
       });
     }
   }
@@ -73,7 +74,7 @@ async function getRecentPrices(
     month = month < 10 ? '0' + month : month;
     return `${year}-${day}-${month}`;
   }
-  url = `https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${formatedBeginingDate}&to=${formatedToday}&apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`;
+  url = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`//`https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${formatedBeginingDate}&to=${formatedToday}&apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`;
   
   const response = await fetch(url, {
     method: "GET",
@@ -81,8 +82,7 @@ async function getRecentPrices(
   });
 
   const data = await response.json();
-
-  return data;
+  return data.historical;
 }
 
 async function getDetailsStock(
@@ -91,7 +91,7 @@ async function getDetailsStock(
   ip: string
 ): Promise<any[]> {
 
-  let url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`
+  let url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`
 
   const response = await fetch(url, {
     method: "GET",
@@ -99,7 +99,7 @@ async function getDetailsStock(
   });
 
   const data = await response.json();
-
+  console.log("detail stock service "+data)
   return data;
 }
 
@@ -124,13 +124,14 @@ async function getLastPrice(
   userId: number,
   ip: string
 ): Promise<any[]> {
-  let url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}?apikey=lwjqI1EwlBerjw257XLkAKMGOauWwcHZ`;
-  const response = await fetch(url, {
+  let url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}?apikey=22b54c1fbd24a4e33e0e433c4fcd49b6`;
+  const response = await fetch(url, { 
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
 
   const data = await response.json(); 
+  console.log(data.companiesPriceList[0].price)
   return data;
 }
 

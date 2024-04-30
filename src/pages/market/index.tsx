@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext.js";
 
 import wallet_image from "src/public/assets/wallet.svg";
+import cash from "src/public/assets/cash.svg";
 import Button from "../../components/Button.component";
 import { useWallet } from "../../context/WalletContext";
 const inter = Inter({ subsets: ["latin"] });
@@ -41,17 +42,18 @@ export default function Market(this: any) {
       .then((response) => {
         return response;
       })
-      .then((data) => setData(data))
+      .then((data) => {
+        return setData(data)})
       .catch((error) => {
         console.log(error);
       });
   }
 
   let list = [];
-
+  console.log(data)
   //check if data is not undefined and not empty
   if (typeof data !== "undefined" && data.length !== 0) {
-    //console.log(data);
+    console.log("market index"+data);
     //get data.symbol, data.name for each dictionnary of data
     for (let i = 0; i < data.length; i++) {
       //check if name contains "warrant" or "Warrant" or "WARRANT" or "Warrants" or "WARRANTS" or "warrants" anf if , then skip
@@ -69,6 +71,7 @@ export default function Market(this: any) {
       list.push({
         symbol: data[i]["symbol"],
         name: data[i]["name"],
+        stockExchange: data[i]["stockExchange"],
       });
     }
   }
@@ -96,6 +99,13 @@ export default function Market(this: any) {
             ))}
           </div>
           <div className={homeStyles.infoBoxContainer}>
+          <InfoBox
+              title={`Valeur de vos actions portefeuille n°${
+                selectedId + 1
+              }`}
+              desc={wallets ? assetsCached.toFixed(2) + " $" : "$"}
+              icon={wallet_image}
+            />
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
               desc={
@@ -103,7 +113,7 @@ export default function Market(this: any) {
                   ? (wallets[selectedId]?.cash || 0).toFixed(2) + " $"
                   : "$"
               }
-              icon={wallet_image}
+              icon={cash}
             />
           </div>
         </div>

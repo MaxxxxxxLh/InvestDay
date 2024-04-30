@@ -24,17 +24,23 @@ async function dailyUpdate(req: Request, res: NextApiResponse<any>) {
     [key: string]: number;
   } = {};
   async function getPriceFound(symbol: string): Promise<number> {
-    if (pricesFound[symbol]) {
-      return pricesFound[symbol];
-    }
-    const price: any = await stocksService.getLastPrice(
-      symbol,
-      req.auth.sub,
-      clientIp as string
-    );
-    pricesFound[symbol] = price.companiesPriceList[0].price;
+    try{
+      if (pricesFound[symbol]) {
+        return pricesFound[symbol];
+      }
+      const price: any = await stocksService.getLastPrice(
+        symbol,
+        req.auth.sub,
+        clientIp as string
+      );
+      const extractedPrice = price.companiesPriceList[0].price;
+      pricesFound[symbol] = extractedPrice;
 
-    return price.companiesPriceList[0].price as number;
+      return extractedPrice as number;
+    } catch (error){
+      console.log(error)
+      return 0
+    }
   }
 
   //get the wallet and then the user

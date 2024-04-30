@@ -15,5 +15,6 @@ async function search(req: Request, res: NextApiResponse<any>) {
   const { term } = req.query;
   if (!term || typeof term !== "string") throw "Invalid search term";
   const data = await stocksService.search(term, req.auth.sub, clientIp as string);
+  console.log(data)
   return res.status(200).json(data);
 }

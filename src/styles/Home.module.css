@@ -10,13 +10,38 @@
 }
 
 .headerContainer h1 {
-  font-family: "Inter";
+  font-family: "Arial";
   font-style: normal;
   font-weight: 600;
   font-size: 20px;
   line-height: 100%;
   letter-spacing: -0.03em;
   color: #333333;
+}
+
+.homePageTitleContainer {
+    font-family: "Arial";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 100%;
+    letter-spacing: -0.03em;
+    color: #333333;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 45px;
+}
+
+.centeredTextContainerJustified {
+    text-align: center;
+    font-size: 18px;
+}
+
+.centeredTextContainer {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 18px;
 }
 
 .tableContainer {

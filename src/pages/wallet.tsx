@@ -63,12 +63,6 @@ export default function Wallet() {
               <Button title={"+"} onClick={() => handleNewWallet()} />
             )}
           </div>
-          <Button
-            title={"Chercher une action"}
-            onClick={() => {
-              router.push("/");
-            }}
-          />
         </div>
         <div className={homeStyles.contentContainer}>
           <div className={homeStyles.infoBoxContainer}>

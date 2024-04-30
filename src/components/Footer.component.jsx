@@ -7,16 +7,25 @@ export default function Footer() {
     <div className={footerStyles.container}>
       <Partners />
       <span>
-        Rejoindre{" "}
+        Données fournies par{" "}
+        <a
+          href="https://financialmodelingprep.com/developer/docs/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Financial Modeling Prep
+        </a>{" "}
+      </span>
+      <span>
+        {" "}
         <a
           href="https://discord.gg/smw2CSHvCW"
           target="_blank"
           rel="noreferrer"
         >
-          notre discord
+          Notre Linktree
         </a>{" "}
       </span>
-      <span>IsepInvest - v1.2</span>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext.js";
 
 import wallet_image from "src/public/assets/wallet.svg";
+import cash from "src/public/assets/cash.svg";
 import Button from "../../components/Button.component";
 import { useWallet } from "../../context/WalletContext";
 const inter = Inter({ subsets: ["latin"] });
@@ -98,6 +99,13 @@ export default function Market(this: any) {
             ))}
           </div>
           <div className={homeStyles.infoBoxContainer}>
+          <InfoBox
+              title={`Valeur de vos actions portefeuille n°${
+                selectedId + 1
+              }`}
+              desc={wallets ? assetsCached.toFixed(2) + " $" : "$"}
+              icon={wallet_image}
+            />
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
               desc={
@@ -105,7 +113,7 @@ export default function Market(this: any) {
                   ? (wallets[selectedId]?.cash || 0).toFixed(2) + " $"
                   : "$"
               }
-              icon={wallet_image}
+              icon={cash}
             />
           </div>
         </div>

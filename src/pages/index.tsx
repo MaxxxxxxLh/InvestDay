@@ -11,16 +11,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Action, Status } from "../types/dataTransaction";
 
-// Market
-import TableSearch from "../components/TableSearch.component.jsx";
-import marketStyles from "../../styles/Market.module.css";
-
 import wallet from "src/public/assets/wallet.svg";
-import wallet_image from "src/public/assets/wallet.svg";
 import cash from "src/public/assets/cash.svg";
 import total from "src/public/assets/total.svg";
 import { useFetch } from "../context/FetchContext";
 import { useWallet } from "../context/WalletContext";
+
+import Link from 'next/link';
+
 type Data = {
   date: Date;
   companie: string;
@@ -108,71 +106,31 @@ if (typeof data !== "undefined" && data.length !== 0) {
   return (
     <>
       <Head>
-        <title>InvestTrade - Home</title>
+        <title>InvestTrade</title>
         <meta name="description" content="Page d'accueil" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={homeStyles.pageContainer}>
-        <div className={homeStyles.headerContainer}>
-          <div className={homeStyles.titleContainer}>
-            <h1>Marchés</h1>
 
-            {wallets.map((wallet, index) => (
-              <Button
-                key={index}
-                title={`${index + 1}`}
-                selected={selectedId === index}
-                onClick={() => selectWallet(index)}
-              />
-            ))}
+          <div className={homeStyles.homePageTitleContainer}>
+            <h1>InvestTrade</h1>
           </div>
-        </div>
+
         <div className={homeStyles.contentContainer}>
-          <div className={homeStyles.infoBoxContainer}>
-            <div className={homeStyles.searchInput}>
-              <div className={homeStyles.formSubmit}>
-                <input
-                  className={homeStyles.formSubmit}
-                  type="text"
-                  placeholder="Rechercher..."
-                  name="value"
-                  value={input}
-                  onChange={onChange}
-                  onKeyDown={handleKeyDown}
-                />
-              </div>
+            <div className={homeStyles.centeredTextContainerJustified}>
+            <p>Bienvenue sur la deuxième édition du concours d&apos;investissement d&apos;IsepInvest !</p>
             </div>
-            <InfoBox
-              title={`Valeur de vos actions portefeuille n°${selectedId + 1}`}
-              desc={wallets ? assetsCached.toFixed(2) + " $" : "$"}
-              icon={wallet}
-            />
-            <InfoBox
-              title={`Cash portefeuille n°${selectedId + 1}`}
-              desc={
-                wallets ? wallets[selectedId]?.cash?.toFixed(2) + " $" : "$"
-              }
-              icon={cash}
-            />
-            <InfoBox
-              title={`Valeur totale portefeuille n°${selectedId + 1}`}
-              desc={
-                wallets
-                  ? ((wallets[selectedId]?.cash || 0) + assetsCached).toFixed(
-                      2
-                    ) + " $"
-                  : "$"
-              }
-              icon={total}
-            />
+            <div className={homeStyles.centeredTextContainer}>
+          <p>Vous commencez avec jusqu&apos;à 4 portefeuilles de 10000€. Le but ? Faire le plus de profit possible. 
+          <br/>Cette année, vous avez libre choix entre la bourse européenne, américaine, et même les cryptos ! </p>
+          <br/>
+          <p>Tu ne sais pas par ou commencer ? Jette un coup d&apos;oeil aux actions sur le <Link href="/market">marché</Link>. </p>
+          <p>Rejoins le <Link href="https://discord.gg/invite/A2EYJBsycU">Discord</Link> pour discuter finance !</p>
           </div>
 
-          <div className={homeStyles.contentContainer}>
           <div className={homeStyles.tableContainer}>
-            <TableSearch data={list} />
           </div>
-        </div>
 
         </div>
       </main>

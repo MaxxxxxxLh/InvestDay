@@ -122,7 +122,7 @@ if (typeof data !== "undefined" && data.length !== 0) {
             <p>Bienvenue sur la deuxième édition du concours d&apos;investissement d&apos;IsepInvest !</p>
             </div>
             <div className={homeStyles.centeredTextContainer}>
-          <p>Vous commencez avec jusqu&apos;à 4 portefeuilles de 10000€. Le but ? Faire le plus de profit possible. 
+          <p>Vous commencez avec jusqu&apos;à 4 portefeuilles de 10000€. Le but ? Faire le plus de profit possible avant le 29 mai !
           <br/>Cette année, vous avez libre choix entre la bourse européenne, américaine, et même les cryptos ! </p>
           <br/>
           <p>Tu ne sais pas par ou commencer ? Jette un coup d&apos;oeil aux actions sur le <Link href="/market">marché</Link>. </p>

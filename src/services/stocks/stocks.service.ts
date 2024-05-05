@@ -1,7 +1,7 @@
 import { Dictionary } from "highcharts";
 import { StockApi } from "../../types/stockapi.type";
-const { API_KEY } = process.env;
-const { API_FINANCIAL_KEY } = process.env;
+const API_FINANCIAL_KEY = process.env.API_FINANCIAL_KEY;
+
 
 async function search(
   symbol: String,

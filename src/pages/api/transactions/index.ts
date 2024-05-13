@@ -9,6 +9,27 @@ import walletsService from "../../../services/wallets/wallets.service";
 // listen for get request
 export default apiHandler(transactionByWallet);
 
+function isMarketOpenNow(openingTime: string, closingTime: string): boolean {
+  const currentDateTime: Date = new Date();
+  const openingDateTime: Date = parseTime(openingTime);
+  const closingDateTime: Date = parseTime(closingTime);
+
+  return currentDateTime >= openingDateTime && currentDateTime <= closingDateTime;
+}
+
+function parseTime(time: string): Date {
+  const hour: number = parseInt(time.split(":")[0]);
+  const minute: number = parseInt(time.split(":")[1].split(" ")[0]);
+  const ampm: string = time.split(" ")[1];
+  const dateTime: Date = new Date();
+
+  dateTime.setHours(hour + (ampm === "p.m." && hour !== 12 ? 12 : 0));
+  dateTime.setMinutes(minute);
+
+  return dateTime;
+}
+
+
 async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   //desactivate temporarly this endpoint
 
@@ -58,7 +79,23 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     throw "Unknown symbol";
   }
   let stock: any = summary.companiesPriceList[0];
-
+  const resultData: any = await stockService.getDetailsStock(
+    symbol,
+    req.auth.sub,
+    clientIp || "",
+  )
+  try{const openMarketHours: any = await stockService.getOpenMarketHours(
+    symbol,
+    req.auth.sub,
+    clientIp || "",
+  )
+  console.log("Open hours")
+  console.log(openMarketHours)
+}catch(e){
+  console.log("error market hours")
+}
+  
+  
   if (!wallet.id) throw new Error("Wallet not found");
   const transaction = await transactionsService.create(
     selling === "true",
@@ -68,9 +105,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   );
   console.log("transaction "+transaction)
   /*if (
-    stock.market_status !== "closed" &&
-    stock.market_status !== "early_trading" &&
-    stock.market_status !== "late_trading"
+   isMarketOpenNow(openMarketHours.stockMarketHours.openingHour,openMarketHours.stockMarketHours.closingHour)
   ) {*/
     if (selling === "true") {
       let quantity = 0;

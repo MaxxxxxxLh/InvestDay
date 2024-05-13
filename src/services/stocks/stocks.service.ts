@@ -2,7 +2,6 @@ import { Dictionary } from "highcharts";
 import { StockApi } from "../../types/stockapi.type";
 const API_FINANCIAL_KEY = process.env.API_FINANCIAL_KEY;
 
-
 async function search(
   symbol: String,
   userId: number,
@@ -131,9 +130,24 @@ async function getLastPrice(
   });
 
   const data = await response.json(); 
-  console.log(data.companiesPriceList[0].price)
   return data;
 }
+
+async function getOpenMarketHours(
+  exchangeName: string,
+  userId: number,
+  ip: string,
+): Promise<any[]>{
+  let url = `./scripts/exchange_open_hours/${exchangeName}_open_hours.json`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: createHeader(userId as unknown as string, ip as unknown as string),
+  });
+  const data = await response.json();
+  return data;
+}
+
+
 
 const stocksService = {
   search,
@@ -141,5 +155,6 @@ const stocksService = {
   getDetailsStock,
   getLastPrice,
   getLogoStock,
+  getOpenMarketHours,
 };
 export default stocksService;

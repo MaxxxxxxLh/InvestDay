@@ -14,10 +14,9 @@ RUN npm install bcrypt
 
 # Bundle app source
 COPY . ./
-# RUN npx prisma migrate deploy
+RUN npx prisma migrate deploy
 # Build the app
 # RUN npm run build
 EXPOSE 3000
-EXPOSE 5555
 # generate prisma client
-
+CMD ["npm", "run", "start"]

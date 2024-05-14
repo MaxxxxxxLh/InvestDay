@@ -5,6 +5,9 @@ const nextConfig = {
 
 module.exports = nextConfig;
 module.exports = {
+  serverRuntimeConfig: {
+    secret: process.env.JWT_SECRET,
+  },
   webpack: (config, _) => ({
     ...config,
     watchOptions: {

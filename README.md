@@ -15,6 +15,7 @@ Based on https://github.com/TugdualDek/InvestDay
 ## Prerequisites
 
 Docker with compose plugin, npm.
+https://docs.docker.com/engine/install/debian/
 
 ## Installation
 

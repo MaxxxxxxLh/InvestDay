@@ -50,10 +50,8 @@ export default function Market(this: any) {
   }
 
   let list = [];
-  console.log(data)
   //check if data is not undefined and not empty
   if (typeof data !== "undefined" && data.length !== 0) {
-    console.log("market index"+data);
     //get data.symbol, data.name for each dictionnary of data
     for (let i = 0; i < data.length; i++) {
       //check if name contains "warrant" or "Warrant" or "WARRANT" or "Warrants" or "WARRANTS" or "warrants" anf if , then skip

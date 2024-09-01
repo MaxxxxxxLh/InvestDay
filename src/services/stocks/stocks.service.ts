@@ -1,5 +1,7 @@
 import { Dictionary } from "highcharts";
 import { StockApi } from "../../types/stockapi.type";
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 const API_FINANCIAL_KEY = process.env.API_FINANCIAL_KEY;
 
 async function search(
@@ -137,16 +139,29 @@ async function getOpenMarketHours(
   exchangeName: string,
   userId: number,
   ip: string,
-): Promise<any[]>{
-  let url = `./scripts/exchange_open_hours/${exchangeName}_open_hours.json`;
+): Promise<any[]> {
+  const scriptDir = dirname(fileURLToPath(import.meta.url));
+  const url = join(scriptDir, `exchange_open_hours/${exchangeName}_open_hours.json`);
   const response = await fetch(url, {
     method: "GET",
-    headers: createHeader(userId as unknown as string, ip as unknown as string),
+    headers: createHeader(userId.toString(), ip),
   });
   const data = await response.json();
   return data;
 }
 
+async function getMarketInfo(
+  userId: number,
+  ip: string,
+):Promise<any[]> {
+  let url = `https://financialmodelingprep.com/api/v3/is-the-market-open-all?apikey=${API_FINANCIAL_KEY}`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: createHeader(userId as unknown as string, ip as unknown as string,)
+  });
+  const data = await response.json();
+  return data;
+}
 
 
 const stocksService = {
@@ -156,5 +171,6 @@ const stocksService = {
   getLastPrice,
   getLogoStock,
   getOpenMarketHours,
+  getMarketInfo,
 };
 export default stocksService;

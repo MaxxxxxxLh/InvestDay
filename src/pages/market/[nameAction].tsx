@@ -114,8 +114,6 @@ export default function DetailAction(req: Request) {
     typeof donneesFinancieres !== "undefined" &&
     donneesFinancieres.length > 0
   ) {
-    console.log("données financières")
-    console.log(donneesFinancieres)
     for (let i = 0; i < donneesFinancieres.length; i++) {
       // put in the list an array with the values of t and c
       const date = new Date(donneesFinancieres[i].date)
